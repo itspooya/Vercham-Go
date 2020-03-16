@@ -35,7 +35,12 @@ func Index(w http.ResponseWriter, r *http.Request, _ httprouter.Params) {
 			return
 
 		}
+	} else if r.Header.Get("Content-Type") == "" {
+		msg := "Content-Type Header Should be set to application/json"
+		http.Error(w, msg, http.StatusUnsupportedMediaType)
+		return
 	}
+
 	// Limit Max size to 1MB malicious or accident behavior
 	r.Body = http.MaxBytesReader(w, r.Body, 1024*1024)
 	decoder := json.NewDecoder(r.Body)
